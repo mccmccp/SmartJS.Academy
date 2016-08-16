@@ -1,0 +1,3 @@
+function isMultipleOfTwo(x){
+
+}
