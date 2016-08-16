@@ -1,0 +1,107 @@
+<html>
+<head>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+        }
+        #test2 {
+            width: 300px;
+            height: 300px;
+            background-color: lightblue;
+            position: absolute;
+            overflow: hidden;
+        }
+        #test {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+<div id="test2">
+    <div id="test"></div>
+</div>
+<script>
+    function makeMovable2(element) {
+        var container = element.offsetParent;
+        var childrens = element.querySelectorAll('[data-movable="1"]');
+        var movingElement;
+        element.dataset.movable = 1;
+        element.addEventListener('mousedown', function(event) {
+            event.stopPropagation();
+            movingElement = element;
+            movingElement.dataset.x = event.x;
+            movingElement.dataset.y = event.y;
+        });
+        document.addEventListener('mousemove', function (event) {
+            if (movingElement) {
+                var deltaX = event.x - movingElement.dataset.x;
+                var deltaY = event.y - movingElement.dataset.y;
+                var left = movingElement.offsetLeft;
+                var top = movingElement.offsetTop;
+                var right = left + movingElement.offsetWidth;
+                var bottom = top + movingElement.offsetHeight;
+
+                movingElement.style.left = (parseInt(left, 10) + deltaX) + 'px';
+                movingElement.style.top = (parseInt(top, 10) + deltaY) + 'px';
+
+                for (var i = 0; i < childrens.length; i++){
+                    var childrenRight = childrens[i].offsetLeft + childrens[i].offsetWidth;
+                    var childrenBottom = childrens[i].offsetTop + childrens[i].offsetHeight;
+                    if (childrens[i].offsetLeft < 0){
+                        childrens[i].style.left = 0;
+                        movingElement.style.left = left;
+                    }
+                    if (childrens[i].offsetTop < 0){
+                        childrens[i].style.top = 0;
+                        movingElement.style.top = top;
+                    }
+                    if (childrenRight > movingElement.offsetWidth){
+                        childrens[i].style.left = movingElement.offsetWidth - childrens[i].offsetWidth;
+                        movingElement.style.left = left;
+                    }
+                    if (childrenBottom > movingElement.offsetHeight){
+                        childrens[i].style.top = movingElement.offsetHeight - childrens[i].offsetHeight;
+                        movingElement.style.top = top;
+                    }
+                    if (right < container.offsetWidth && bottom < container.offsetHeight && left > 0 && top > 0){
+                        childrens[i].style.left = (parseInt(childrens[i].offsetLeft, 10) - deltaX) + 'px';
+                        childrens[i].style.top = (parseInt(childrens[i].offsetTop, 10) - deltaY) + 'px';
+                    }
+                }
+                if (right > container.offsetWidth){
+                    movingElement.style.left = container.offsetWidth - movingElement.offsetWidth;
+                }
+                if (left < 0){
+                    movingElement.style.left = 0;
+                }
+                if (top < 0){
+                    movingElement.style.top = 0;
+                }
+                if (bottom > container.offsetHeight){
+                    movingElement.style.top = container.offsetHeight - movingElement.offsetHeight;
+                }
+                movingElement.dataset.x = event.x;
+                movingElement.dataset.y = event.y;
+            }
+        });
+        document.addEventListener('mouseup', function (event) {
+            if (movingElement) {
+                delete movingElement.dataset.x;
+                delete movingElement.dataset.y;
+                movingElement = null;
+            }
+        })
+    }
+    makeMovable2(document.querySelector("#test"));
+    makeMovable2(document.querySelector("#test2"));
+</script>
+</body>
+</html>

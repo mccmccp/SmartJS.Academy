@@ -1,0 +1,28 @@
+
+* {
+  box-sizing: border-box;
+}
+
+td {
+  text-align: center;
+  border: solid lightgray 1px;
+  min-width: 30px;
+}
+
+td span {
+  border: solid black 2px;
+  padding: 2px;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  line-height: 22px;
+}
+
+td.red span {
+  background-color: pink;
+}
+
+td.black span {
+  background-color: gray;
+  color: white;
+}
